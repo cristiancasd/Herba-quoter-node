@@ -1,17 +1,31 @@
 require('express-validator')
-
+require('colors')
 const { check } = require('express-validator');
 const express= require('express')
 const cors= require('cors');
 const app=express()
 const { validation } = require('../middlewares/validation');
 
+const dbConnection = require('../database/config');
+
+
+
 class Server{
     constructor(){
         this.app= express();
         this.port= process.env.PORT;
+        this.conectarDB();  
         this.middlewares();
         this.routes();
+    }
+    async conectarDB(){
+        try{
+            await dbConnection.sync();
+            console.log('conectado a la db'.yellow)
+        }catch(error){
+            console.log('error conectand a la db'.red)
+        }
+        //dbConnection.sync().then(()=>console.log('DB conected')).catch((error)=>console.log('error tremendo'.red,  error));
     }
     middlewares(){  //(.use es la palabra para saber que es un middleware)
         this.app.use(cors());            
