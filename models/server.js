@@ -7,7 +7,8 @@ const app=express()
 const { validation } = require('../middlewares/validation');
 
 const dbConnection = require('../database/config');
-
+require('./Quoters');
+require('./Products');
 
 
 class Server{
@@ -18,7 +19,7 @@ class Server{
         this.middlewares();
         this.routes();
     }
-    async conectarDB(){
+    async conectarDB(){ 
         try{
             await dbConnection.sync();
             console.log('conectado a la db'.yellow)
@@ -33,20 +34,7 @@ class Server{
         this.app.use(express.static('public'))  //Directorio publico
     }
     routes(){
-        this.app.get('/api/', (req, res)=> {
-            res.json({msg: 'get api'})
-        });
-
-        this.app.post('/api/',
-        [
-            check('id', 'El nombre es obligatorio').not().isEmpty(),
-            validation
-        ], 
-        (req, res)=> {
-            const {id}=req.body;
-            res.json({msg: 'post Api', id}
-            )
-        });
+        this.app.use('/api/quoters',require('../routes/quoter.route'));
     }
     listen(){
         this.app.listen(this.port, ()=>{

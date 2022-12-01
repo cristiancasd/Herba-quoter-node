@@ -13,5 +13,5 @@ module.exports=new Sequelize('quoters','postgres','ABCD1234',{
     /*define: {
         timestamps: false
     },*/
-    //logging: false //NO se muestra en el console.log los reportes de la db
+    logging: false //NO se muestra en el console.log los reportes de la db
 });
