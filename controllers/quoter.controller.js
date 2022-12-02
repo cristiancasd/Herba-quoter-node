@@ -1,4 +1,3 @@
-const { response } = require("express");
 const Product = require("../models/Products");
 const Quoter = require('../models/quoters');
 

@@ -9,7 +9,7 @@ const { validation } = require('../middlewares/validation');
 const dbConnection = require('../database/config');
 require('./Quoters');
 require('./Products');
-
+require('./Users');
 
 class Server{
     constructor(){
@@ -35,6 +35,7 @@ class Server{
     }
     routes(){
         this.app.use('/api/quoters',require('../routes/quoter.route'));
+        this.app.use('/api/users',require('../routes/user.route'));
     }
     listen(){
         this.app.listen(this.port, ()=>{
