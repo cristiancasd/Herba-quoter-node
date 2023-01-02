@@ -1,7 +1,10 @@
 const Sequelize = require('sequelize');
-module.exports=new Sequelize('quoters','postgres','ABCD1234',{
-    host: '127.0.0.1',
-    port: '5433',
+require('dotenv').config();
+
+module.exports=new Sequelize(process.env.DB_NAME,process.env.DB_USERNAME ,process.env.DB_PASSWORD,{
+
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     dialect: 'postgres',
     pool:{
         max: 5, 
@@ -9,6 +12,7 @@ module.exports=new Sequelize('quoters','postgres','ABCD1234',{
         acquire: 30000,
         idle: 10000
     },
+
     // No crear las columndas de created y updated date
     /*define: {
         timestamps: false

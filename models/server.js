@@ -1,10 +1,8 @@
 require('express-validator')
 require('colors')
-const { check } = require('express-validator');
 const express= require('express')
 const cors= require('cors');
 const app=express()
-const { validation } = require('../middlewares/validation');
 
 const dbConnection = require('../database/config');
 require('./Quoters');
@@ -24,7 +22,8 @@ class Server{
             await dbConnection.sync();
             console.log('conectado a la db'.yellow)
         }catch(error){
-            console.log('error conectand a la db'.red)
+            console.log('error conectand a la db'.red);
+            console.log(error)
         }
         //dbConnection.sync().then(()=>console.log('DB conected')).catch((error)=>console.log('error tremendo'.red,  error));
     }
