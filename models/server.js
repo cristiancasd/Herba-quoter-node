@@ -31,7 +31,7 @@ class Server{
         this.app.use(cors());            
         this.app.use(express.json());  //Lectura y parseo del body 
         this.app.use(express.static('public'))  //Directorio publico
-    }
+    } 
     routes(){
         this.app.use('/api/quoters',require('../routes/quoter.route'));
         this.app.use('/api/users',require('../routes/user.route'));

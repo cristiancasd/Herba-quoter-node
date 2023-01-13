@@ -22,14 +22,14 @@ const loginUser=async (req, res)=> {
         const user=await User.findOne({where:{email}});              
         if(!user){                                                   //Confirmo que el correo exista
             return res.status(400).json({
-                msg:'User / email not valid'
+                message:'User / email not valid'
             })
         }
     
         const validPassword=bcryptjs.compareSync(password,user.password); 
         if(!validPassword){                                             //Confirmo contraseña valida
             return res.status(400).json({
-                msg:'User / password not valid'
+                message:'User / password not valid'
             })
         }
 
@@ -38,7 +38,7 @@ const loginUser=async (req, res)=> {
         const token = await newJWT(user.id) 
         
         res.json({
-            msg:'Login ok',
+            message:'Login ok',
             user,
             token
         })
@@ -47,7 +47,7 @@ const loginUser=async (req, res)=> {
     }catch(error){
         console.log(error)
         res.status(500).json({  //internal server error
-            msg: 'Hable con el administrador'
+            message: 'Hable con el administrador'
         })
     }
 
@@ -93,7 +93,7 @@ const deleteUser=async (req, res)=> {
     const {id}=req.params;
     const  user = await User.findOne({ where : {id}});
     await User.destroy({where: {id}}); 
-    res.json({msg: 'delete ok', id})
+    res.json({message: 'delete ok', id})
 }
 
 module.exports={

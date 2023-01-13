@@ -4,18 +4,18 @@ const dbConection=require('../database/config');
 const Quoter = require('./quoters');
 
 const Product=dbConection.define('product',{
-    id:{
+    idProduct:{
         type: Sequelize.UUID,
         primaryKey: true,
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
     },
-    title: Sequelize.STRING(60),
+    //title: Sequelize.STRING(60),
     sku: Sequelize.STRING(10),
-    quantity: Sequelize.STRING,
-    unitPrice: Sequelize.INTEGER,   
-    total: Sequelize.INTEGER,
-    pv: Sequelize.FLOAT,
+    quantity: Sequelize.INTEGER,
+    //unitPrice: Sequelize.INTEGER,   
+    //total: Sequelize.INTEGER,
+    //pv: Sequelize.FLOAT,
     quoterId: {
         type: Sequelize.UUID,
         references : {
@@ -27,18 +27,12 @@ const Product=dbConection.define('product',{
 },{
     instanceMethods: {
         toJSON: function () {
-            const userObj = Object.assign({}, this.dataValues);
-  
-            delete userObj.title;
-  
-            return userObj
+            const productObj = Object.assign({}, this.dataValues);  
+            delete productObj.title;  
+            return productObj
         }
   }
 })
-
-
-
-
 
 
 Product.belongsTo(Quoter, {

@@ -8,7 +8,7 @@ const Users=db.define('users',{
         primaryKey: true,
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
-    },
+    }, 
     name: Sequelize.STRING(60),
     email:{
         type: Sequelize.STRING(30),
