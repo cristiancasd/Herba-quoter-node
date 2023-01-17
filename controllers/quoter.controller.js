@@ -1,20 +1,27 @@
 require('colors');
-
 const Product = require("../models/Products");
 const Quoter = require('../models/quoters');
-//const { initialData } = require('../static/data/quoters-data');
-const {loseweight} = require('../static/data/quoters-data.json') 
+const { initialData } = require('../static/data/quoters-data');
+//const {loseweight} = require('../static/data/quoters-data.json') 
 
 
 const findDefaultQuoters=(req, res) =>{
-    //const loseweight=initialData();
-    res.status(200).json(loseweight);
+
+    const loseweight=initialData();
+    const quotersInitial= loseweight.map(quoter=>{
+           return{ 
+                ...quoter,
+                image: process.env.HOST_API+'/files/'+quoter.image
+            }
+        }
+    )
+    res.status(200).json(quotersInitial);
 }
 
 const findQuoter=async (req, res)=> { 
     const {id}=req.params;
 
-    const quoter= await Quoter.findAll({
+    const quoter= await Quoter.findAll({ 
         where: {'$id$': id},
         include:[{model: Product,as: 'products',}]
     });
@@ -98,11 +105,11 @@ const updateQuoter=async (req, res)=> {
         if(idUser!=quoter.idUser) 
             return res.status(400).json({message:'You cannot change a quoter of other user'});
 
-        const  dataToUpload={
-            title:data.title,
-            description:data.description,
-            image: data.image,
-        }
+    const  dataToUpload={
+        title:data.title,
+        description:data.description,
+        image: data.image,
+    }
 
         console.log('dataToUpload ', dataToUpload)
 
@@ -154,6 +161,10 @@ const deleteQuoter=async (req, res)=> {
     res.json({message: 'delete ok', id})
 }
 
+
+
+
+
 const validateProductsArray=async(products)=>{
     if(products.length==0) return false
     let arrayOk=true
@@ -175,5 +186,5 @@ module.exports={
     createQuoter,
     updateQuoter,
     deleteQuoter,
-    findAllQuotersByUser
+    findAllQuotersByUser,
 }

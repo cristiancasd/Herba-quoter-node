@@ -22,9 +22,6 @@ const quoterByIdExists=async(id)=>{
     }
   }
 
-
-
-
   module.exports={
     quoterByIdExists,
     userByIdExists,

@@ -2,12 +2,14 @@ require('express-validator')
 require('colors')
 const express= require('express')
 const cors= require('cors');
-const app=express()
-
+const fileUpload=require('express-fileupload')
 const dbConnection = require('../database/config');
+
+/*
 require('./Quoters');
 require('./Products');
 require('./Users');
+*/
 
 class Server{
     constructor(){
@@ -27,14 +29,20 @@ class Server{
         }
         //dbConnection.sync().then(()=>console.log('DB conected')).catch((error)=>console.log('error tremendo'.red,  error));
     }
-    middlewares(){  //(.use es la palabra para saber que es un middleware)
+    middlewares(){  
         this.app.use(cors());            
         this.app.use(express.json());  //Lectura y parseo del body 
         this.app.use(express.static('public'))  //Directorio publico
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath: true //Si la carpeta no existe la creamos
+        }));
     } 
     routes(){
         this.app.use('/api/quoters',require('../routes/quoter.route'));
         this.app.use('/api/users',require('../routes/user.route'));
+        this.app.use('/api/files',require('../routes/uploads.route'));
     }
     listen(){
         this.app.listen(this.port, ()=>{

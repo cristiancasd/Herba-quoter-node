@@ -3,7 +3,7 @@
     "loseweight": [
         {
             "id": "loseweight-minimum",
-            "title": "Lose Weight-Minimum",
+            "title": "Lose-Minimum",
             "description": "",
             "products": [
                 {
@@ -19,7 +19,7 @@
         },
         {
             "id": "loseweight-medium",
-            "title": "Lose Weight-Medium",
+            "title": "Lose-Medium",
             "description": "",
             "products": [
                 {
@@ -39,7 +39,7 @@
         },
         {
             "id": "loseweight-full",
-            "title": "Lose Weight-Full",
+            "title": "Lose-Full",
             "description": "",
             "products": [
                 {

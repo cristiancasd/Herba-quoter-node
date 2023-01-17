@@ -2,7 +2,7 @@ require('express-validator');
 const { Router } = require("express");
 const { validation } = require('../middlewares/validation');
 const { check } = require('express-validator');
-const { findAllQuoters, createQuoter, updateQuoter, deleteQuoter, findQuoter, findAllQuotersByUser, findDefaultQuoters } = require('../controllers/quoter.controller');
+const { findAllQuoters, createQuoter, updateQuoter, deleteQuoter, findQuoter, findAllQuotersByUser, findDefaultQuoters, getStaticImage } = require('../controllers/quoter.controller');
 const { quoterByIdExists } = require('../helpers/db-validators');
 const { validateJWTbackendNest } = require('../middlewares/validate-jwt-backend-nest');
 const { validRoles } = require('../middlewares/validate-roles');
@@ -53,6 +53,8 @@ router.get('/:id',[
     check('id').custom(quoterByIdExists),  
     validation],
 findQuoter);
+
+
 
 module.exports= router;
 

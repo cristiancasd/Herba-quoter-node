@@ -1,8 +1,11 @@
 
+ const uuid = require('uuid');
+ 
  const initialQuoters=[
     {
-        id: 'loseweight-minimum',
-        title: "Lose Weight-Minimum",
+        //id: 'loseweight-minimum',
+        id: uuid.v4(),
+        title: "Lose-Minimum",
         description: "",
         products:[
             {
@@ -18,8 +21,9 @@
     },
 
     {
-        id: 'loseweight-medium',
-        title: "Lose Weight-Medium",
+        //id: 'loseweight-medium',
+        id: uuid.v4(),
+        title: "Lose-Medium",
         description: "",
         products:[
             {
@@ -38,8 +42,9 @@
         image:"loseweight-medium.jpg"
     },
     {
-        id: 'loseweight-full',
-        title: "Lose Weight-Full",
+        //id: 'loseweight-full',
+        id: uuid.v4(),
+        title: "Lose-Full",
         description: "",
         products:[
             {

@@ -6,8 +6,8 @@ require('colors')
 
 const validateJWTbackendNest= async (req,res,next)=>{
     const tokenToReview=req.header('Authorization');
-    console.log('voy a validar toker '.blue)
-    console.log(tokenToReview)
+    //console.log('voy a validar toker '.blue)
+    //console.log(tokenToReview)
     if(!tokenToReview){
          return res.status(401).json({
              message:'token is missing in the request'
@@ -16,13 +16,13 @@ const validateJWTbackendNest= async (req,res,next)=>{
 
     try{
 
-        console.log('baseURL_DEV ',process.env.AXIOS_URL_BACKEND_USERS_DEV);
-        console.log('baseURL_PROD ',process.env.AXIOS_URL_BACKEND_USERS);
-        console.log('STAGE ',process.env.STAGE);
+        //console.log('baseURL_DEV ',process.env.AXIOS_URL_BACKEND_USERS_DEV);
+        //console.log('baseURL_PROD ',process.env.AXIOS_URL_BACKEND_USERS);
+        //console.log('STAGE ',process.env.STAGE);
         const baseUrl=process.env.STAGE==='dev'
             ? process.env.AXIOS_URL_BACKEND_USERS_DEV
             : process.env.AXIOS_URL_BACKEND_USERS
-        console.log('baseUrl', baseUrl)
+        //console.log('baseUrl', baseUrl)
 
         const config = {
             headers: { Authorization: tokenToReview }
@@ -36,11 +36,11 @@ const validateJWTbackendNest= async (req,res,next)=>{
           bodyParameters,
           config
         )
-        console.log('good response '.yellow)
+        //console.log('good response '.yellow)
 
         if(!resp.data.user.isactive) 
             return res.status(401).json({ message:'You are inactive, talk with the admin'})
-        console.log(resp.data);
+        //console.log(resp.data);
         req.user=resp.data.user
         req.userRol=resp.data.user.rol
         next()
