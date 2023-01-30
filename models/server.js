@@ -4,6 +4,8 @@ const express= require('express')
 const cors= require('cors');
 const fileUpload=require('express-fileupload')
 const dbConnection = require('../database/config');
+const { errorHandler } = require('../middlewares/error-handler');
+
 
 /*
 require('./Quoters');
@@ -18,6 +20,7 @@ class Server{
         this.conectarDB();  
         this.middlewares();
         this.routes();
+        this.app.use(errorHandler) 
     }
     async conectarDB(){ 
         try{
@@ -38,7 +41,10 @@ class Server{
             tempFileDir : '/tmp/',
             createParentPath: true //Si la carpeta no existe la creamos
         }));
+        
     } 
+
+    
     routes(){
         this.app.use('/api/quoters',require('../routes/quoter.route'));
         this.app.use('/api/users',require('../routes/user.route'));

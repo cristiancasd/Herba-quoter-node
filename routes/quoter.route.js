@@ -6,6 +6,7 @@ const { findAllQuoters, createQuoter, updateQuoter, deleteQuoter, findQuoter, fi
 const { quoterByIdExists } = require('../helpers/db-validators');
 const { validateJWTbackendNest } = require('../middlewares/validate-jwt-backend-nest');
 const { validRoles } = require('../middlewares/validate-roles');
+const { validateProductsArray } = require('../middlewares/validate-products-array');
 
 const router=Router();
  
@@ -21,10 +22,11 @@ router.get('/iduser/:idUser',[
 router.put('/edit/:id',[    
     validateJWTbackendNest,
     check('id', 'id must be UUID').isUUID(),
+    check('title', 'Img must be String').isString(),
+    check('description', 'description must be String').isString(),
     check('image', 'Img must be String').isString(),
-    check('total', 'total must be int').isInt(),
-    check('pv', 'pv must be number').isFloat(),
     check('products', 'products must be array').isArray(),
+    validateProductsArray,
     validation
 ] ,updateQuoter);
 
@@ -39,11 +41,8 @@ router.post('/create',[
     validateJWTbackendNest,
     check('title', 'title es obligatorio').not().isEmpty(),
     check('image', 'image must be String').isString(),
-    //check('total', 'total es obligatorio').not().isEmpty(),
-    //check('total', 'total must be int').isInt(),
-    //check('pv', 'pv es obligatorio').not().isEmpty(),
-    //check('pv', 'pv must be number').isFloat(),
     check('products', 'products must be array').isArray(),
+    validateProductsArray,
     validation], 
     createQuoter
 );
