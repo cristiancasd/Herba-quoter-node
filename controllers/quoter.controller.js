@@ -1,5 +1,5 @@
 require('colors');
-const { titleQuoterByUserExist } = require('../helpers/db-validators');
+const { titleQuoterByUserExist } = require('../helpers/dbFinder');
 const Product = require("../models/Products");
 const Quoter = require('../models/quoters');
 const { initialData } = require('../static/data/quoters-data');
@@ -7,6 +7,8 @@ const { initialData } = require('../static/data/quoters-data');
 const { deleteImageCloudinary, } = require('../helpers/imageManage');
 const { validation } = require('../middlewares/validation');
 const { validationResult } = require('express-validator');
+const { ForbidenError } = require('../errors/forbidden-error');
+const { BadRequestError } = require('../errors/bad-request-error');
 
 
 const findDefaultQuoters=(req, res) =>{
@@ -18,13 +20,13 @@ const findDefaultQuoters=(req, res) =>{
                 image: process.env.HOST_API+'/files/'+quoter.image
             }
         }
-    )
+    );
+    //console.log('---------------- }',quotersInitial )
     res.status(200).json(quotersInitial);
 }
 
 const findQuoter=async (req, res)=> { 
     const {id}=req.params;
-
     const quoter= await Quoter.findAll({ 
         where: {'$id$': id},
         include:[{model: Product,as: 'products',}]
@@ -55,13 +57,11 @@ const createQuoter=async (req, res, next)=> {
     const idUser=req.user.id;
     
     if (await titleQuoterByUserExist(title,idUser)){
-        const err= new Error('Title already exist, try with other one')
-        err.reasons= [{message:'title already exist, try with other one'}]
-        err.status=400
+        const err= new BadRequestError('Title already exist, try with other one, ')
         return next(err)
     }
    
-    console.log('voy a constuir la data')
+    //console.log('voy a constuir la data')
     
     const  data={
         title,
@@ -70,14 +70,6 @@ const createQuoter=async (req, res, next)=> {
         idUser
     }
 
-    /*const productsOk=await validateProductsArray(products)
-    if(!productsOk){  //throw new Error('products array incorrect')
-            const err= new Error('products array incorrect')
-            err.reasons= [{message:'products array incorrect'}]
-            err.status=400
-            next(err)
-            return
-    } */
     
     const quoter=new Quoter(data);
     await quoter.save();
@@ -105,24 +97,10 @@ const updateQuoter=async (req, res, next)=> {
     const userRole=req.user.rol
 
     if (await titleQuoterByUserExist(data.title,idUser, id)){
-        const err= new Error('Title already exist, try with other one')
-        err.reasons= [{message:'title already exist, try with other one'}]
-        err.status=400
+        const err= new BadRequestError('Title already exist, try with other one, ')
         return next(err)
     }
-    /*let productsOk=[]
-    if(data.products){ 
-        productsOk=await validateProductsArray(data.products)
-        if(!productsOk) {
-            const err= new Error('products array incorrect')
-            err.reasons= [{message:'products array incorrect'}]
-            err.status=400
-            return next(err)
-            return res.status(400).json({message:'products array incorrect'});
-        }
-    } */
 
-    //const quoter= await Quoter.findOne({where: {id}})
    
     const quoterDB= await Quoter.findAll({
         where: {'$id$': id},
@@ -130,37 +108,14 @@ const updateQuoter=async (req, res, next)=> {
     });
 
     const quoter= quoterDB[0]
-
-
-    if(!quoter){
-        const err= new Error('The quoter dont exist')
-        err.reasons= [{message:'The quoter dont exist'}]
-        err.status=400
-        return next(err)
-    }
-
-    //console.log('quoter del put ', quoter, quoter.id);
-    //console.log('datc ', data);
-
-    //const {id: quoterId, cretedAt, updatedAt, products, ...quoterBeforeToUpload}=quoter;
     const {id: quoterId}= quoter;
-
-  
-
-    
 
 
     if(userRole==='user')
         if(idUser!=quoter.idUser){
-            const err= new Error('You cannot change a quoter of other user')
-            err.reasons= [{message:'You cannot change a quoter of other user'}]
-            err.status=403
+            const err= new ForbidenError('You cannot change a quoter of other user, ')
             return next(err)
-            return res.status(400).json({message:'You cannot change a quoter of other user'});
-
     }
-
-
 
     const  dataToUpload={
         title:data.title,
@@ -223,16 +178,13 @@ const deleteQuoter=async (req, res, next)=> {
     const {id}=req.params;
     const idUser=req.user.id
     const userRole=req.user.rol
-
+    console.log('borrando quoter ', id)
     const  quoter = await Quoter.findOne({ where : {id}});
-    console.log(quoter)
+    //console.log(quoter)
     if(userRole==='user')
         if(idUser!=quoter.idUser){
-            const err= new Error('You cannot delete a quoter of other user')
-            err.reasons= [{message:'You cannot delete a quoter of other user'}]
-            err.status=403
+            const err= new ForbidenError('You cannot delete a quoter of other user, ')
             return next(err)
-            return res.status(400).json({message:'You cannot delete a quoter of other user'});
         }
 
     await Quoter.destroy({where: {id}}); 
@@ -240,6 +192,21 @@ const deleteQuoter=async (req, res, next)=> {
     res.json({message: 'delete ok', id})
 }
 
+const deletaAllByUser= async (req, res, next)=> {
+    const {idToDelete}=req.params;
+    const idUser=req.user.id
+    const userRole=req.user.rol;
+
+    if(userRole==='user'){
+        if(idUser!==idToDelete){
+            const err= new ForbidenError('You cannot delete ALl quoters of other user, ')
+            return next(err)
+        }
+    }
+
+    await Quoter.destroy({where: {idUser: idToDelete}}); 
+    res.status(200).json();
+}
 
 
 module.exports={
@@ -250,4 +217,5 @@ module.exports={
     updateQuoter,
     deleteQuoter,
     findAllQuotersByUser,
+    deletaAllByUser,
 }

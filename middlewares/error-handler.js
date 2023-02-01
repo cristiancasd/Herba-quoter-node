@@ -1,20 +1,34 @@
-//const { response, request } = require("express");
- 
+//"use strict";
+//Object.defineProperty(exports, "__esModule", { value: true });
+//exports.errorHandler = void 0;
+const custom_error = require("../errors/custom-error");
+
+
 const errorHandler=(
     err,
     req,
     res, 
     next)=>{
     
-        console.log('el error es ---------9999999999-----------', err)
-    if (res.headersSent) {
+       // console.log('el e rror es ---------9999999999-----------', err)
+   
+
+    console.log('en error handler')
+    if (err instanceof custom_error.CustomError) {
+        return res.status(err.status).send({ errors: err.serializeErrors() });
+    }
+   
+    res.status(400).send({
+        errors: [{ message: 'Something went wrong' }]
+    });
+
+    /*if (res.headersSent) {
         return next(err)
     }
-
-
     res.status(err.status).json({
         errors: err.reasons
-    });
+    });*/
+
 }
 
 module.exports={

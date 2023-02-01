@@ -1,9 +1,14 @@
 const request = require('supertest');
+
+const path= require('path')
 const axios= require('axios')
 const { app } = require('../app2');
 
 const Product = require("../models/Products");
 const Quoter = require('../models/quoters');
+const { initialData } = require('../static/data/quoters-data');
+
+
 
 const quoterCorrect2= {
     title: 'AMIGAAAA',
@@ -12,7 +17,7 @@ const quoterCorrect2= {
     products:[
         {
             "sku":"0146",
-            "quantity":8,
+            "quantity":8
         }
     ]
 }
@@ -24,7 +29,7 @@ const quoterCorrect= {
     products:[
         {
             "sku":"0789",
-            "quantity":8,
+            "quantity":8
         },
         {
             "sku":"6585",
@@ -34,13 +39,13 @@ const quoterCorrect= {
 }
 
 const quoterCorrect3= {
-    title: 'quoterCorrect3',
-    description: 'quoterCorrect3',
+    title: 'quoter3',
+    description: 'quoter3',
     image:'',
     products:[
         {
             "sku":"0146",
-            "quantity":8,
+            "quantity":8
         },
         {
             "sku":"0290",
@@ -50,17 +55,29 @@ const quoterCorrect3= {
 }
 
 const quoterCorrect4= {
-    title: 'quoterCorrect4',
-    description: 'quoterCorrect3',
+    title: "quoter4",
+    description: "quoter4",
     image:'',
     products:[
         {
             "sku":"0146",
-            "quantity":8,
+            "quantity":8
         },
         {
             "sku":"0290",
             "quantity":3
+        }
+    ]
+}
+
+const quoterCorrect5= {
+    title: "quoter5",
+    description: "quoter5",
+    image:'',
+    products:[
+        {
+            "sku":"0146",
+            "quantity":8
         }
     ]
 }
@@ -144,29 +161,39 @@ const signinTestSuperAdmin= async () =>{
 }
 
 
-const globalCreateQuoter = async (quot) => {
+const globalCreateQuoter = async (quot, token) => {
     const quoter= await request(app)
         .post('/api/quoters/create')
         .send(quot)
         .set('Authorization', `Bearer ${token}`);
         expect(quoter.statusCode).toBe(201);
-    return quoter.body[0]
+
+    return quoter.body[0];
 };
 
-const globalDeleteQuoter = async (idToDelete) => {
+
+const globalDeleteAllQuoterByUser=  async (idUser, token) => {
+    await request(app)
+        .delete('/api/quoters/deleteallbyuser/'+idUser)
+        .set('Authorization', `Bearer ${token}`);
+ 
+};
+
+/*
+const globalDeleteQuoter = async (idToDelete, token) => {
     await request(app)
          .delete('/api/quoters/delete/'+idToDelete)
          .set('Authorization', `Bearer ${token}`);
         //expect(response.statusCode).toBe(200);
 };
-
+*/
 const randomUUID='c16ca228-cef4-453d-b007-7e2383eb894f';
 
 let user={};
 let admin={};
 let super_admin={};
 
-let token='';
+let tokenAdmin='';
 let tokenUser='';
 let tokenSuperAdmin='';
 
@@ -176,7 +203,7 @@ let idQuoterUser=''
 
 beforeAll(async () => {
     const infoAdmin= await signinTest();
-    token= infoAdmin.token;
+    tokenAdmin= infoAdmin.token;
     admin= infoAdmin.user;
 
     const infoUser= await signinTestUser();
@@ -187,17 +214,21 @@ beforeAll(async () => {
     tokenSuperAdmin=infoUser.token;
     super_admin=infoSuper.user;
 
-    
+    await globalDeleteAllQuoterByUser(admin.id, tokenAdmin)
+    await globalDeleteAllQuoterByUser(user.id, tokenUser)
+    await globalDeleteAllQuoterByUser(super_admin.id, tokenSuperAdmin)
   });
 
 
 beforeEach(async() => {
-    const quoterAdmin= await globalCreateQuoter(quoterCorrect2)
+    const quoterAdmin= await globalCreateQuoter(quoterCorrect2, tokenAdmin)
     idQuoterAdmin=quoterAdmin.id
 });
 
 afterEach(async() => {
-    await globalDeleteQuoter(idQuoterAdmin)
+    await globalDeleteAllQuoterByUser(admin.id,tokenAdmin)
+    await globalDeleteAllQuoterByUser(user.id,tokenUser)
+    await globalDeleteAllQuoterByUser(super_admin.id,tokenSuperAdmin)
 });
 
 
@@ -207,15 +238,17 @@ afterAll(() => {
     //return clearCityDatabase();
 });
 
-  
-/********************* GET ALL QUOTER ***************************** */
+/* 
+
+*/
+//********************* GET ALL QUOTER ***************************** 
 describe('GET /api/quoters', () =>{
-    test('should respond with a 200 status code', async()=>{
+    it('should respond with a 200 status code', async()=>{
        const response= await request(app).get('/api/quoters').send();
        expect(response.statusCode).toBe(200);
     });
 
-    test('should respond 200 - array', async()=>{
+    it('should respond 200 - array', async()=>{
         const response= await request(app).get('/api/quoters').send();
         expect(response.statusCode).toBe(200);
         expect(response.body).toBeInstanceOf(Array)
@@ -223,7 +256,7 @@ describe('GET /api/quoters', () =>{
 });
 
 
-/********************* GET QUOTER BY USER ************************* */
+//********************* GET QUOTER BY USER ************************* 
 describe('GET /api/quoters/idQuoter', () =>{
 
     test('should respond array 200', async()=>{
@@ -260,10 +293,10 @@ describe('GET /api/quoters/idQuoter', () =>{
 });
 
 
-/********************* GET QUOTER BY ID ***************************** */
+//********************* GET QUOTER BY ID ***************************** 
 describe('GET /api/quoters/idQuoter', () =>{
 
-    test('should respond array', async()=>{
+    it('should respond array', async()=>{
         const response= await request(app).get('/api/quoters/'+idQuoterAdmin).send();
         expect(response.statusCode).toBe(200);
         expect(response.body).toBeInstanceOf(Array);
@@ -285,11 +318,11 @@ describe('GET /api/quoters/idQuoter', () =>{
 });
 
 
-/********************* PUT QUOTER  ***************************** */
+//********************* PUT QUOTER  ***************************** 
 describe('PUT /api/quoters/edit',  () =>{
     
 
-    test('Update fullness (200)', async()=>{
+    it('Update fullness (200)', async()=>{
 
         const dataToUpdate={
             title: 'testing',
@@ -302,12 +335,12 @@ describe('PUT /api/quoters/edit',  () =>{
                 }
             ]
         }
-        const quoter = await globalCreateQuoter(quoterCorrect3);
+        const quoter = await globalCreateQuoter(quoterCorrect3, tokenAdmin);
        
         const response= await request(app)
             .put('/api/quoters/edit/'+quoter.id)
             .send(dataToUpdate)
-            .set('Authorization', `Bearer ${token}`);
+            .set('Authorization', `Bearer ${tokenAdmin}`);
             expect(response.statusCode).toBe(200)
             expect(response.body).toBeInstanceOf(Array);
             expect(response.body[0].id).toBeDefined();
@@ -316,16 +349,13 @@ describe('PUT /api/quoters/edit',  () =>{
             expect(response.body[0].image).toBeDefined();
             expect(response.body[0].products).toBeDefined();
             expect(response.body[0].products).toBeInstanceOf(Array);
-            //expect(response.body[0].products[0].idProduct).toBeDefined();
             expect(response.body[0].products[0].sku).toBeDefined();
             expect(response.body[0].products[0].quantity).toBeDefined();
-
 
             const quoterDB= await Quoter.findAll({
                 where: {'$id$': quoter.id},
                 include:[{model: Product,as: 'products',}]
             });
-
 
             expect(quoterDB).toBeInstanceOf(Array);
             expect(quoterDB[0].title).toEqual(dataToUpdate.title);
@@ -336,18 +366,13 @@ describe('PUT /api/quoters/edit',  () =>{
             expect(quoterDB[0].products[0].sku).toEqual(dataToUpdate.products[0].sku);
             expect(quoterDB[0].products[0].quantity).toEqual(dataToUpdate.products[0].quantity);
 
-
-
-        await globalDeleteQuoter(quoter.id);
     }); 
+    
 
+    //todo: implement dont care upercases
+    it('We can not update a repetitive title (400)', async()=>{
 
-  
-
-
-    test('We can not update a repetitive title (400)', async()=>{
-
-        const quoter = await globalCreateQuoter(quoterCorrect3);
+        const quoter = await globalCreateQuoter(quoterCorrect3, tokenAdmin);
        
         const response= await request(app)
          .put('/api/quoters/edit/'+idQuoterAdmin)
@@ -362,26 +387,25 @@ describe('PUT /api/quoters/edit',  () =>{
                 },
             ]
          })
-         .set('Authorization', `Bearer ${token}`);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
 
-        await globalDeleteQuoter(quoter.id);
     });  
 
 
-    test('Bad data(Product Array) should respond with a 400 status code', async()=>{
+    it('Bad data(Product Array) should respond with a 400 status code', async()=>{
         const response= await request(app)
          .put('/api/quoters/edit/'+idQuoterAdmin)
          .send(quoterWithProductArrayBad)
-         .set('Authorization', `Bearer ${token}`);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
     });  
 
-    test('Bad Data (Empty Athorization) should respond with a 401 status code', async()=>{
+    it('Bad Data (Empty Athorization) should respond with a 401 status code', async()=>{
         const response= await request(app)
          .put('/api/quoters/edit/'+idQuoterAdmin)
          .send(quoterCorrect)
@@ -391,7 +415,7 @@ describe('PUT /api/quoters/edit',  () =>{
         expect(response.body.errors[0].message).toBeDefined();
     });   
 
-    test('Bad Data (bad JWT) should respond with a 401 status code', async()=>{
+    it('Bad Data (bad JWT) should respond with a 401 status code', async()=>{
         const response= await request(app)
          .put('/api/quoters/edit/'+idQuoterAdmin)
          .send(quoterCorrect)
@@ -401,25 +425,25 @@ describe('PUT /api/quoters/edit',  () =>{
         expect(response.body.errors[0].message).toBeDefined();
     }); 
 
-    test('Bad Data (ID quoter no UUIID) should respond with a 400 status code', async()=>{
+    it('Bad Data (ID quoter no UUIID) should respond with a 400 status code', async()=>{
         const response= await request(app)
          .put('/api/quoters/edit/'+'nc45zxc')
-         .set('Authorization', `Bearer ${token}`);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message && response.body.errors[0].message).toBeDefined();
      }); 
 
-     test('Bad Data (ID quoter  UUIID dont exist) should respond with a 400 status code', async()=>{
+     it('Bad Data (ID quoter  UUIID dont exist) should respond with a 400 status code', async()=>{
         const response= await request(app)
          .put('/api/quoters/edit/'+randomUUID)
-         .set('Authorization', `Bearer ${token}`);
-        expect(response.statusCode).toBe(400);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
+        expect(response.statusCode).toBe(404);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
      }); 
 
-     test('Bad Data (Token User try delete other quoter different his) should respond with a 403 status code', async()=>{
+     it('Bad Data (Token User try delete other quoter different his) should respond with a 403 status code', async()=>{
         const response= await request(app)
          .put('/api/quoters/edit/'+idQuoterAdmin)
          .send(quoterCorrect)
@@ -431,16 +455,15 @@ describe('PUT /api/quoters/edit',  () =>{
 
 });
 
-/********************* CREATE QUOTER ***************************** */
+//********************* CREATE QUOTER ***************************** 
 describe('POST /api/quoters/create - Error when send bad data', () =>{ 
 
 
-    let idNewQuoter=''
-    test('should respond with a 200 status code', async()=>{
+    it('should respond with a 200 status code', async()=>{
         const quoter= await request(app)
         .post('/api/quoters/create')
         .send(quoterCorrect)
-        .set('Authorization', `Bearer ${token}`);
+        .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(quoter.statusCode).toBe(201);
         expect(quoter.body).toBeInstanceOf(Array);
         expect(quoter.body[0].id).toBeDefined();
@@ -452,72 +475,77 @@ describe('POST /api/quoters/create - Error when send bad data', () =>{
         //expect(quoter.body[0].products[0].idProduct).toBeDefined();
         expect(quoter.body[0].products[0].sku).toBeDefined();
         expect(quoter.body[0].products[0].quantity).toBeDefined();
-        idNewQuoter=quoter.body[0].id;
+        //idNewQuoter=quoter.body[0].id;
     });
 
-    test('data correctly saved in DB', async()=>{
-        
+    it('data correctly saved in DB', async()=>{
+
+        const response = await globalCreateQuoter(quoterCorrect5, tokenAdmin);
+        const idNewQuoter=response.id
         const quoterDB= await Quoter.findAll({
             where: {'$id$': idNewQuoter},
             include:[{model: Product,as: 'products',}]
         });
         expect(quoterDB).toBeInstanceOf(Array);
-        expect(quoterDB[0].title).toEqual(quoterCorrect.title);
-        expect(quoterDB[0].description).toEqual(quoterCorrect.description);
-        expect(quoterDB[0].image).toEqual(quoterCorrect.image);
+        expect(quoterDB[0].title).toEqual(quoterCorrect5.title);
+        expect(quoterDB[0].description).toEqual(quoterCorrect5.description);
+        expect(quoterDB[0].image).toEqual(quoterCorrect5.image);
         expect(quoterDB[0].products).toBeDefined();
         expect(quoterDB[0].products).toBeInstanceOf(Array);
-        expect(quoterDB[0].products[0].sku).toEqual(quoterCorrect.products[0].sku);
-        expect(quoterDB[0].products[0].quantity).toEqual(quoterCorrect.products[0].quantity);
+        expect(quoterDB[0].products[0].sku).toEqual(quoterCorrect5.products[0].sku);
+        expect(quoterDB[0].products[0].quantity).toEqual(quoterCorrect5.products[0].quantity);
     })
 
+    //todo: title repetitive include default quoters
 
+    //todo: implement dont care upercases
+    it('bada data (title already exist) should respond with a 400 status code', async()=>{
 
-
-    test('bada data (title already exist) should respond with a 400 status code', async()=>{
+        await globalCreateQuoter(quoterCorrect, tokenAdmin);
+        
         const response= await request(app)
         .post('/api/quoters/create')
         .send(quoterCorrect)
-        .set('Authorization', `Bearer ${token}`);
+        .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body).toBeInstanceOf(Object);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
     });
 
-    test('Bad data(Title) should respond with a 400 status code', async()=>{
+    it('Bad data(Title) should respond with a 400 status code', async()=>{
        const response= await request(app)
         .post('/api/quoters/create')
         .send(quoterBadWithoutTitle)
-        .set('Authorization', `Bearer ${token}`);
+        .set('Authorization', `Bearer ${tokenAdmin}`);
        expect(response.statusCode).toBe(400);
        expect(response.body).toBeInstanceOf(Object);
        expect(response.body.errors).toBeDefined();
        expect(response.body.errors[0].message && response.body.errors[0].field).toBeDefined();
     });     
 
-    test('Bad data(Image) should respond with a 400 status code', async()=>{
+    it('Bad data(Image) should respond with a 400 status code', async()=>{
         const response= await request(app)
          .post('/api/quoters/create')
          .send(quoterBadWithoutImage)
-         .set('Authorization', `Bearer ${token}`);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message && response.body.errors[0].field).toBeDefined();
      });   
      
-     test('Bad data(Product Array) should respond with a 400 status code', async()=>{
+     it('Bad data(Product Array) should respond with a 400 status code', async()=>{
         const response= await request(app)
          .post('/api/quoters/create')
          .send(quoterWithProductArrayBad)
-         .set('Authorization', `Bearer ${token}`);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
      
      });     
 
-     test('Bad Data (Empty Athorization) should respond with a 401 status code', async()=>{
+     it('Bad Data (Empty Athorization) should respond with a 401 status code', async()=>{
         const response= await request(app)
          .post('/api/quoters/create')
          .send(quoterCorrect)
@@ -527,7 +555,7 @@ describe('POST /api/quoters/create - Error when send bad data', () =>{
         expect(response.body.errors[0].message).toBeDefined();
      });   
 
-     test('Bad Data (bad JWT) should respond with a 401 status code', async()=>{
+     it('Bad Data (bad JWT) should respond with a 401 status code', async()=>{
         const response= await request(app)
          .post('/api/quoters/create')
          .send(quoterCorrect)
@@ -538,48 +566,41 @@ describe('POST /api/quoters/create - Error when send bad data', () =>{
      }); 
 
 
-     
-
-     test('Good deleted, should respond with a 200 status code', async()=>{
-        const response= await request(app)
-         .delete('/api/quoters/delete/'+idNewQuoter)
-         .set('Authorization', `Bearer ${token}`);
-        expect(response.statusCode).toBe(200);
-    });
 });
 
-const badIDQuoter='85';
-/********************* DELETE QUOTER ***************************** */
-describe('DELETE /api/quoters',  () =>{ 
+
+
+//********************* DELETE QUOTER ***************************** 
+describe('DELETE /api/quoters/delete',  () =>{ 
     
-    test('Bad Data (Empty Athorization) should respond with a 401 status code', async()=>{
+    it('Bad Data (Empty Athorization) should respond with a 401 status code', async()=>{
         const response= await request(app)
-         .delete('/api/quoters/delete/'+badIDQuoter)
+         .delete('/api/quoters/delete/'+'badIDQuoter')
         // .set('Authorization', `Bearer ${token}`);
         expect(response.statusCode).toBe(401);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
      }); 
 
-     test('Bad Data (ID quoter no UUIID) should respond with a 401 status code', async()=>{
+     it('Bad Data (ID quoter no UUIID) should respond with a 401 status code', async()=>{
         const response= await request(app)
-         .delete('/api/quoters/delete/'+badIDQuoter)
-         .set('Authorization', `Bearer ${token}`);
+         .delete('/api/quoters/delete/'+'badIDQuoter')
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(400);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message && response.body.errors[0].message).toBeDefined();
      }); 
 
-     test('Bad Data (ID quoter  UUIID dont exist) should respond with a 400 status code', async()=>{
+     it('Bad Data (ID quoter  UUIID dont exist) should respond with a 404 status code', async()=>{
         const response= await request(app)
          .delete('/api/quoters/delete/'+randomUUID)
-         .set('Authorization', `Bearer ${token}`);
-        expect(response.statusCode).toBe(400);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
+        expect(response.statusCode).toBe(404);
         expect(response.body.errors).toBeDefined();
         expect(response.body.errors[0].message).toBeDefined();
      }); 
 
-     test('Bad Data (Token User try delete other quoter different his) should respond with a 403 status code', async()=>{
+     it('Bad Data (Token User try delete other quoter different his) should respond with a 403 status code', async()=>{
         const response= await request(app)
          .delete('/api/quoters/delete/'+idQuoterAdmin)
          .set('Authorization', `Bearer ${tokenUser}`);
@@ -588,16 +609,116 @@ describe('DELETE /api/quoters',  () =>{
         expect(response.body.errors[0].message).toBeDefined();
      });
 
-     test('Good deleted, should respond with a 200 status code', async()=>{
+     it('Good deleted, should respond with a 200 status code', async()=>{
         const response= await request(app)
          .delete('/api/quoters/delete/'+idQuoterAdmin)
-         .set('Authorization', `Bearer ${token}`);
+         .set('Authorization', `Bearer ${tokenAdmin}`);
         expect(response.statusCode).toBe(200);
     });
 });
 
 
-/********************* BAD request uRL ***************************** */
+//******************** DELETE ALL QUOTER BY USER  ********************
+describe('DELETE /api/quoters/deleteallbyuser/', ()=>{
+
+    it('show error if the user is not authenticate', async()=>{
+        const quoterUser= await globalCreateQuoter(quoterCorrect4, tokenUser);
+        const quoterAdmin=  await globalCreateQuoter(quoterCorrect4, tokenAdmin);
+
+        const response= await request(app)
+         .delete('/api/quoters/deleteallbyuser/'+user.id)
+        // .set('Authorization', `Bearer ${token}`);
+        expect(response.statusCode).toBe(401);
+        expect(response.body.errors).toBeDefined();
+        expect(response.body.errors[0].message).toBeDefined();
+    })
+
+    it('show error if the idUser is incorrect', async()=>{
+        const quoterUser= await globalCreateQuoter(quoterCorrect4, tokenUser);
+        const quoterAdmin=  await globalCreateQuoter(quoterCorrect4, tokenAdmin);
+
+        const response= await request(app)
+         .delete('/api/quoters/deleteallbyuser/'+'dasdfasklfa')
+         .set('Authorization', `Bearer ${tokenUser}`);
+        expect(response.statusCode).toBe(400);
+        expect(response.body.errors).toBeDefined();
+        expect(response.body.errors[0].message).toBeDefined();
+    })
+
+    it('show error if a user try to delete the quoter of other one', async()=>{
+        const quoterUser= await globalCreateQuoter(quoterCorrect4, tokenUser);
+        const quoterAdmin=  await globalCreateQuoter(quoterCorrect4, tokenAdmin);
+
+        const response= await request(app)
+         .delete('/api/quoters/deleteallbyuser/'+admin.id)
+         .set('Authorization', `Bearer ${tokenUser}`);
+        expect(response.statusCode).toBe(403);
+        expect(response.body.errors).toBeDefined();
+        expect(response.body.errors[0].message).toBeDefined();
+    });
+
+    it('show error if dont exist quoters from idUser (404)', async()=>{
+        const quoterUser= await globalCreateQuoter(quoterCorrect4, tokenUser);
+        const quoterAdmin=  await globalCreateQuoter(quoterCorrect4, tokenAdmin);
+
+        const response= await request(app)
+         .delete('/api/quoters/deleteallbyuser/'+randomUUID)
+         .set('Authorization', `Bearer ${tokenUser}`);
+
+
+         expect(response.statusCode).toBe(404);
+         expect(response.body.errors).toBeDefined();
+         expect(response.body.errors[0].message).toBeDefined();
+    })
+
+    it('It is ok if a user delete his ournes quoter', async()=>{
+        const quoterUser= await globalCreateQuoter(quoterCorrect3, tokenUser);
+        const quoterUser1= await globalCreateQuoter(quoterCorrect4, tokenUser);
+        const quoterUser2= await globalCreateQuoter(quoterCorrect5, tokenUser);
+        
+        const quoterAdmin=  await globalCreateQuoter(quoterCorrect4, tokenAdmin);
+
+        const response= await request(app)
+         .delete('/api/quoters/deleteallbyuser/'+user.id)
+         .set('Authorization', `Bearer ${tokenUser}`);
+         expect(response.statusCode).toBe(200);
+
+        
+        const quotersUser= await Quoter.findAll({where: {idUser: user.id}});
+        expect(quotersUser).toBeInstanceOf(Array);
+        expect(quotersUser.length).toEqual(0);
+        
+
+        const quotersAdmin= await Quoter.findAll({where: {idUser: admin.id}});
+        expect(quotersAdmin).toBeInstanceOf(Array);
+        expect(quotersAdmin.length).not.toEqual(0);
+
+    });
+
+    it('It is ok if the admin delete the quoter of anyone user', async()=>{
+        const quoterUser= await globalCreateQuoter(quoterCorrect3, tokenUser);
+        const quoterUser1= await globalCreateQuoter(quoterCorrect4, tokenUser);
+        const quoterUser2= await globalCreateQuoter(quoterCorrect5, tokenUser);
+        
+        const quoterAdmin=  await globalCreateQuoter(quoterCorrect4, tokenAdmin);
+
+        const response= await request(app)
+         .delete('/api/quoters/deleteallbyuser/'+user.id)
+         .set('Authorization', `Bearer ${tokenAdmin}`);
+         expect(response.statusCode).toBe(200);
+
+        const quotersUser= await Quoter.findAll({where: {idUser: user.id}});
+        expect(quotersUser).toBeInstanceOf(Array);
+        expect(quotersUser.length).toEqual(0);
+
+        const quotersAdmin= await Quoter.findAll({where: {idUser: admin.id}});
+        expect(quotersAdmin).toBeInstanceOf(Array);
+        expect(quotersAdmin.length).not.toEqual(0);
+    })
+})
+
+
+//********************* BAD request uRL ***************************** 
 describe('All bad request /apppi',  () =>{
     test('GET should respond with a 404 status code', async()=>{
         const response= await request(app)
@@ -632,5 +753,25 @@ describe('All bad request /apppi',  () =>{
     }); 
 })
 
+
+//************************ default quoters **********************************/
+describe('GET default quoter /default',  () =>{
+    it('should respond 200 - array', async()=>{
+        const response= await request(app).get('/api/quoters/default').send();
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toBeInstanceOf(Array)
+     });
+
+     it('the response must be equal to the original data default', async()=>{
+        const response= await request(app).get('/api/quoters/default').send();
+        const loseweight=initialData();
+        response.body.map((quoterDefault,count)=>{
+            expect(quoterDefault.title).toEqual(loseweight[count].title)
+            expect(quoterDefault.description).toEqual(loseweight[count].description)
+            expect(quoterDefault.products).toEqual(loseweight[count].products)
+            expect(path.basename(quoterDefault.image)).toEqual(loseweight[count].image)
+        })
+     });
+})
 
 //todo  *************** Upload image ********************************

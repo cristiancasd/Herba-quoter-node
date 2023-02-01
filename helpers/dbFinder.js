@@ -1,12 +1,23 @@
 const Quoter = require("../models/Quoters");
 const User = require("../models/Users");
 
+/*
 const quoterByIdExists=async(id)=>{
     const quoterExists = await Quoter.findOne({where: {id: id}});
     if (!quoterExists){
-      throw new Error('The id dont exists '+id)
+      throw new Error('The Quoter id dont exists ')
     }
   }
+
+  const quotersByUserExists=async(idToDelete)=>{
+
+    console.log('estoy en quotersByUserExists*****************')
+    const quoterExists = await Quoter.findOne({where: {idUser: idToDelete}});
+    if (!quoterExists){
+      throw new Error('The id '+idToDelete+ ' dont have quoters')
+    }
+  }
+
 
   const userByIdExists=async(id)=>{
     const userExists = await User.findOne({where: {id: id}});
@@ -22,11 +33,11 @@ const quoterByIdExists=async(id)=>{
     }
   }
 
+  */
+
   const titleQuoterByUserExist=async(title, idUser, idQuoter=undefined )=>{
     const quoterTitleExist = await Quoter.findAll({where:{title:title, idUser:idUser}});
     
-  
-
     if(!idQuoter)
       return (quoterTitleExist[0])
         ? true 
@@ -44,8 +55,9 @@ const quoterByIdExists=async(id)=>{
   }
 
   module.exports={
-    quoterByIdExists,
-    userByIdExists,
-    emailExists,
+    //quoterByIdExists,
+    //userByIdExists,
+    //emailExists,
     titleQuoterByUserExist,
+    //quotersByUserExists
   }

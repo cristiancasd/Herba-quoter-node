@@ -3,7 +3,7 @@ const { Router } = require("express");
 const { validation } = require('../middlewares/validation');
 const { check } = require('express-validator');
 const { findAllUsers, updateUser, createUser, deleteUser, findUser, loginUser } = require('../controllers/user.controller');
-const { userByIdExists, emailExists } = require('../helpers/db-validators');
+const { userByIdExists, emailExists } = require('../helpers/dbFinder');
 const { validateJWT } = require('../middlewares/validate-jws');
 
 const router=Router();
