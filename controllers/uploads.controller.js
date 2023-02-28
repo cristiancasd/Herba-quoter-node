@@ -1,8 +1,11 @@
 const {join}= require('path')
 const fs =  require('fs')
 
-const Product = require("../models/Products");
-const Quoter = require('../models/quoters');
+//const Product = require("../models/Products");
+//const Quoter = require('../models/quoters');
+
+const Product = require("../src/models/Products");
+const Quoter = require('../src/models/Quoters');
 
 const { deleteImageCloudinary, saveImageOnCloudinary } = require('../helpers/imageManage');
 

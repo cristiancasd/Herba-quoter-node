@@ -1,7 +1,7 @@
 require('colors');
 const { titleQuoterByUserExist } = require('../helpers/dbFinder');
-const Product = require("../models/Products");
-const Quoter = require('../models/quoters');
+//const Product = require("../models/Products");
+//const Quoter = require('../models/quoters');
 const { initialData } = require('../static/data/quoters-data');
 //const {loseweight} = require('../static/data/quoters-data.json') 
 const { deleteImageCloudinary, } = require('../helpers/imageManage');
@@ -9,6 +9,9 @@ const { validation } = require('../middlewares/validation');
 const { validationResult } = require('express-validator');
 const { ForbidenError } = require('../errors/forbidden-error');
 const { BadRequestError } = require('../errors/bad-request-error');
+
+const Product = require("../src/models/Products");
+const Quoter = require('../src/models/Quoters');
 
 
 const findDefaultQuoters=(req, res) =>{

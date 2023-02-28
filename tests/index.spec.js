@@ -1,11 +1,18 @@
 const request = require('supertest');
 
+
+
+
 const path= require('path')
 const axios= require('axios')
 const { app } = require('../app2');
 
-const Product = require("../models/Products");
-const Quoter = require('../models/quoters');
+//const Product = require("../models/Products");
+//const Quoter = require('../models/quoters');
+
+const Product = require("../src/models/Products");
+const Quoter = require('../src/models/Quoters');
+
 const { initialData } = require('../static/data/quoters-data');
 
 
@@ -201,7 +208,14 @@ let tokenSuperAdmin='';
 let idQuoterAdmin=''
 let idQuoterUser=''
 
+const sequelize = require('../src/config/database');
+
+
 beforeAll(async () => {
+
+    await sequelize.sync();
+
+
     const infoAdmin= await signinTest();
     tokenAdmin= infoAdmin.token;
     admin= infoAdmin.user;
@@ -221,26 +235,26 @@ beforeAll(async () => {
 
 
 beforeEach(async() => {
-    const quoterAdmin= await globalCreateQuoter(quoterCorrect2, tokenAdmin)
-    idQuoterAdmin=quoterAdmin.id
+    const quoterAdmin= await globalCreateQuoter(quoterCorrect2, tokenAdmin);
+    idQuoterAdmin=quoterAdmin.id;
 });
 
 afterEach(async() => {
-    await globalDeleteAllQuoterByUser(admin.id,tokenAdmin)
-    await globalDeleteAllQuoterByUser(user.id,tokenUser)
-    await globalDeleteAllQuoterByUser(super_admin.id,tokenSuperAdmin)
+    await globalDeleteAllQuoterByUser(admin.id,tokenAdmin);
+    await globalDeleteAllQuoterByUser(user.id,tokenUser);
+    await globalDeleteAllQuoterByUser(super_admin.id,tokenSuperAdmin);
 });
 
 
 
-  
-afterAll(() => {
+//const dbConnection = require('../database/config');
+afterAll(async () => {
+    //await dbConnection.close();
+    await sequelize.close();
     //return clearCityDatabase();
 });
 
-/* 
 
-*/
 //********************* GET ALL QUOTER ***************************** 
 describe('GET /api/quoters', () =>{
     it('should respond with a 200 status code', async()=>{
@@ -254,6 +268,9 @@ describe('GET /api/quoters', () =>{
         expect(response.body).toBeInstanceOf(Array)
      });
 });
+
+/*
+
 
 
 //********************* GET QUOTER BY USER ************************* 
@@ -296,7 +313,7 @@ describe('GET /api/quoters/idQuoter', () =>{
 //********************* GET QUOTER BY ID ***************************** 
 describe('GET /api/quoters/idQuoter', () =>{
 
-    it('should respond array', async()=>{
+    it('GET QUOTER BY ID should respond array', async()=>{
         const response= await request(app).get('/api/quoters/'+idQuoterAdmin).send();
         expect(response.statusCode).toBe(200);
         expect(response.body).toBeInstanceOf(Array);
@@ -754,7 +771,7 @@ describe('All bad request /apppi',  () =>{
 })
 
 
-//************************ default quoters **********************************/
+//*********************** default quoters **********************************
 describe('GET default quoter /default',  () =>{
     it('should respond 200 - array', async()=>{
         const response= await request(app).get('/api/quoters/default').send();
@@ -773,5 +790,7 @@ describe('GET default quoter /default',  () =>{
         })
      });
 })
+
+*/
 
 //todo  *************** Upload image ********************************

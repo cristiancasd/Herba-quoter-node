@@ -1,6 +1,6 @@
 const bcryptjs=require('bcryptjs');
 const { newJWT } = require('../helpers/newJWT');
-const User = require('../models/users');
+const User = require('../src/models/users');
 
 require('colors')
 
