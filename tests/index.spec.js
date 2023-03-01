@@ -228,9 +228,9 @@ beforeAll(async () => {
     tokenSuperAdmin=infoUser.token;
     super_admin=infoSuper.user;
 
-    await globalDeleteAllQuoterByUser(admin.id, tokenAdmin)
-    await globalDeleteAllQuoterByUser(user.id, tokenUser)
-    await globalDeleteAllQuoterByUser(super_admin.id, tokenSuperAdmin)
+    //await globalDeleteAllQuoterByUser(admin.id, tokenAdmin)
+    //await globalDeleteAllQuoterByUser(user.id, tokenUser)
+    //await globalDeleteAllQuoterByUser(super_admin.id, tokenSuperAdmin)
   });
 
 
@@ -240,9 +240,12 @@ beforeEach(async() => {
 });
 
 afterEach(async() => {
-    await globalDeleteAllQuoterByUser(admin.id,tokenAdmin);
-    await globalDeleteAllQuoterByUser(user.id,tokenUser);
-    await globalDeleteAllQuoterByUser(super_admin.id,tokenSuperAdmin);
+
+    await Quoter.destroy({where: {}}); 
+
+    //await globalDeleteAllQuoterByUser(admin.id,tokenAdmin);
+    //await globalDeleteAllQuoterByUser(user.id,tokenUser);
+    //await globalDeleteAllQuoterByUser(super_admin.id,tokenSuperAdmin);
 });
 
 
@@ -255,21 +258,21 @@ afterAll(async () => {
 });
 
 
+
 //********************* GET ALL QUOTER ***************************** 
 describe('GET /api/quoters', () =>{
-    it('should respond with a 200 status code', async()=>{
+    test('should respond with a 200 status code', async()=>{
        const response= await request(app).get('/api/quoters').send();
        expect(response.statusCode).toBe(200);
     });
 
-    it('should respond 200 - array', async()=>{
+    test('should respond 200 - array', async()=>{
         const response= await request(app).get('/api/quoters').send();
         expect(response.statusCode).toBe(200);
         expect(response.body).toBeInstanceOf(Array)
      });
 });
 
-/*
 
 
 
@@ -309,6 +312,15 @@ describe('GET /api/quoters/idQuoter', () =>{
 
 });
 
+/*
+*/
+
+
+
+
+
+
+
 
 //********************* GET QUOTER BY ID ***************************** 
 describe('GET /api/quoters/idQuoter', () =>{
@@ -333,6 +345,7 @@ describe('GET /api/quoters/idQuoter', () =>{
 
      });
 });
+
 
 
 //********************* PUT QUOTER  ***************************** 
@@ -790,7 +803,7 @@ describe('GET default quoter /default',  () =>{
         })
      });
 })
-
+/*
 */
 
 //todo  *************** Upload image ********************************

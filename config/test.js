@@ -8,6 +8,7 @@ module.exports = {
       password: process.env.DB_PASSWORD,
       dialect: 'postgres',
       storage: ':memory:',
+      //storage: './database.postgres',
       logging: false,
       port: process.env.DB_PORT_TEST,
       host: process.env.DB_HOST_TEST,

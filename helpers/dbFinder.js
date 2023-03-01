@@ -1,5 +1,6 @@
-const Quoter = require("../models/Quoters");
+//const Quoter = require("../models/Quoters");
 const User = require("../models/Users");
+const Quoter = require("../src/models/Quoters");
 
 /*
 const quoterByIdExists=async(id)=>{

@@ -15,10 +15,12 @@ const errorHandler=(
 
     console.log('en error handler')
     if (err instanceof custom_error.CustomError) {
+        console.log(err.serializeErrors())
         return res.status(err.status).send({ errors: err.serializeErrors() });
     }
-   
+    console.log('Something went wrong')
     res.status(400).send({
+        
         errors: [{ message: 'Something went wrong' }]
     });
 

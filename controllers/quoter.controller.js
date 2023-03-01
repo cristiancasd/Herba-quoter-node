@@ -196,9 +196,13 @@ const deleteQuoter=async (req, res, next)=> {
 }
 
 const deletaAllByUser= async (req, res, next)=> {
+    console.log('on deletaAllByUser  ' )
+
     const {idToDelete}=req.params;
     const idUser=req.user.id
     const userRole=req.user.rol;
+
+    console.log('on deletaAllByUser , userRole, idToDelete, idUser ', userRole,idToDelete, idUser )
 
     if(userRole==='user'){
         if(idUser!==idToDelete){
@@ -207,7 +211,9 @@ const deletaAllByUser= async (req, res, next)=> {
         }
     }
 
-    await Quoter.destroy({where: {idUser: idToDelete}}); 
+    console.log('user Authorized to delet quoter')
+    const response=await Quoter.destroy({where: {idUser: idToDelete}}); 
+    console.log('response deleting process ', response)
     res.status(200).json();
 }
 
