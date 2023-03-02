@@ -5,15 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon index.js",
-    "start:dev": "cross-env NODE_ENV=development npm run migrate &&  cross-env NODE_ENV=development nodemon index" ,
-    "migrate": "sequelize-cli db:migrate",
-    
-    
-    "pretest": "cross-env NODE_ENV=test sequelize-cli db:migrate",
-    "posttest": "cross-env NODE_ENV=test sequelize-cli db:migrate:undo:all",
-    "test:migration": "cross-env NODE_ENV=test jest db:create --verbose --silent --detectOpenHandles  && cross-env NODE_ENV=test jest npm run dbcreate",
-    "dbcreate": "sequelize-cli db:create",
-    
+    "start:dev": "cross-env NODE_ENV=development nodemon index" ,
     "test": "cross-env NODE_ENV=test2 jest --verbose --silent --detectOpenHandles",
     "test:match": "npm run test --watch"
   },

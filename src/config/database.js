@@ -6,7 +6,7 @@ const config = require('config');
 const dbConfig = config.get('database'); //database is into file /config/index
  
 
-console.log('dbConfig es !!!! ', dbConfig);
+console.log('dbConfig es !!!! ');
 
 module.exports= new Sequelize(
   dbConfig.database, 
@@ -28,27 +28,3 @@ module.exports= new Sequelize(
 
 
 
-
-//module.exports = sequelize;
-
-/*
-
-
-
-module.exports = {
-    dialect: "postgres",
-    host: process.env.DB_HOST,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-
-    //database: process.env.NODE_ENV === "test" ? "syscondom_test" : "syscondom",
-    database: process.env.NODE_ENV === "test" ? "herbalifedbnode" : "herbalifedbnode",
-
-    logging: false,
-    define: {
-      timestamp: true,
-      underscored: true,
-    },
-  };
-
-*/
