@@ -19,7 +19,7 @@ const start= async()=>{
 
     
     try{
-        console.log('voy a intentar conectar')
+        console.log('voy a intentar conectar GitAction test-1')
         
         //todo CHANGES
         //await dbConnection.sync();
