@@ -9,6 +9,9 @@
     "test": "cross-env NODE_ENV=test2 jest --verbose --silent --detectOpenHandles",
     "test:ci": "cross-env NODE_ENV=test2 jest",
 
+    "testcriss": "jest --verbose --silent --detectOpenHandles",
+
+
     "test:match": "npm run test --watch"
   },
 

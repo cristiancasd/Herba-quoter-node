@@ -2,13 +2,14 @@ require ('dotenv').config();
 require('colors')
 require ('dotenv').config()
 
-const { app } = require('./app2');
+const { app } = require('./app');
 
 const sequelize = require('./src/config/database');
 
 
 const start= async()=>{
 
+    console.log('estoy en start ')
     if (!process.env.PORT) {        
         console.log('no hay puerto')
         throw new Error('JWT_KEY must be defined');

@@ -3,7 +3,7 @@ const request = require('supertest');
 
 const path= require('path')
 const axios= require('axios')
-const { app } = require('../../app2');
+const { app } = require('../../app');
 
 const sequelize = require('../../src/config/database');
 const Quoter = require('../../src/models/Quoters');
