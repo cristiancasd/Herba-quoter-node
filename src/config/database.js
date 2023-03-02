@@ -3,7 +3,11 @@ require('dotenv').config();
 const Sequelize = require('sequelize');
 
 //npm config 
-const config = require('config');
+
+
+//const config = require('config');
+
+
 //const dbConfig = config.get('database'); //database is into file /config/index
  
 const dbConfig={ 
