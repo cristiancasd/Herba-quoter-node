@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=development nodemon index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon index" ,
     "test": "cross-env NODE_ENV=test2 jest --verbose --silent --detectOpenHandles",
-    "test:ci": "cross-env NODE_ENV=test2 jest",
+    "test:ci": "jest",
 
     "testcriss": "jest --verbose --silent --detectOpenHandles",
 
