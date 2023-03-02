@@ -26,6 +26,7 @@ app.use(fileUpload({
 app.use('/api/quoters',require('./routes/quoter.route'));
 app.use('/api/users',require('./routes/user.route'));
 app.use('/api/files',require('./routes/uploads.route'));
+
 app.all('*', async (req, res,next) => {
     const err= new NotFoundError('Route ')
     next(err);

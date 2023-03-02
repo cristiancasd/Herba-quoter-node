@@ -23,9 +23,9 @@ const quotersByUserExist= async (req,res,next)=>{
     const errors= validationResult(req);
     if(errors.isEmpty()){
         const {idToDelete}=req.params;
-        console.log('en middleware quotersByUserExist', idToDelete)
+        //console.log('en middleware quotersByUserExist', idToDelete)
         const quoterExists = await Quoter.findOne({where: {idUser: idToDelete}});
-        console.log(' response findOne ', quoterExists)
+        //console.log(' response findOne ', quoterExists)
         if (!quoterExists){
             const err= new NotFoundError('Quoters with idUser');
             return next(err)

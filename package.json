@@ -11,12 +11,16 @@
     
     "pretest": "cross-env NODE_ENV=test sequelize-cli db:migrate",
     "posttest": "cross-env NODE_ENV=test sequelize-cli db:migrate:undo:all",
-    "test": "cross-env NODE_ENV=test jest db:create --verbose --silent --detectOpenHandles  && cross-env NODE_ENV=test jest npm run dbcreate",
+    "test:migration": "cross-env NODE_ENV=test jest db:create --verbose --silent --detectOpenHandles  && cross-env NODE_ENV=test jest npm run dbcreate",
     "dbcreate": "sequelize-cli db:create",
     
-    "testall": "cross-env NODE_ENV=test jest --verbose --silent",
+    "test": "cross-env NODE_ENV=test2 jest --verbose --silent --detectOpenHandles",
     "test:match": "npm run test --watch"
   },
+
+  
+
+
   "keywords": [],
   "author": "",
   "license": "ISC",
