@@ -1,9 +1,8 @@
 name: tests-quoter
 
 on: 
-  pull_request:
-    paths:
-      - './**'  
+  pull_request
+
 jobs:
   build:
     runs-on: ubuntu-latest
