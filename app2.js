@@ -6,6 +6,9 @@ const { errorHandler } = require('./middlewares/error-handler');
 const { NotFoundError } = require('./errors/not-found-error');
 
 
+
+
+
 const app= express();
 
 //middlewares
@@ -21,8 +24,9 @@ app.use(fileUpload({
 
 //routes
 app.use('/api/quoters',require('./routes/quoter.route'));
-app.use('/api/users',require('./routes/user.route'));
+//app.use('/api/users',require('./routes/user.route'));
 app.use('/api/files',require('./routes/uploads.route'));
+
 app.all('*', async (req, res,next) => {
     const err= new NotFoundError('Route ')
     next(err);

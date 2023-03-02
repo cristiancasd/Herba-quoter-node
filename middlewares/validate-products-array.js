@@ -27,32 +27,7 @@ const validateProductsArray=  (req,res,next)=>{
 
             throw (errors.isEmpty()) 
                 ? new RequestValidationError(productsError)
-                : new RequestValidationError([...errors.array(), ...productsError]);
-           
-            /*const err= new Error('each product object must have sku and quantity properties')
-            err.reasons= [{
-                message:'each product object must have sku and quantity properties',
-                field: 'products'
-            }]
-            err.status=400
-            return next(err) 
-
-            if(!errors.isEmpty()){ 
-                console.log('errors.array()  ', errors.array())
-                const previousMistakes=errors.array().map(previousMistake=>{
-                    return {
-                        message: previousMistake.msg,
-                        field: previousMistake.param,
-                    }
-                })
-            err.reasons= [ ...previousMistakes, ...err.reasons, ]
-            }
-
-            return next(err)
-
-           */
-            
-            
+                : new RequestValidationError([...errors.array(), ...productsError]);   
         }
     }
     

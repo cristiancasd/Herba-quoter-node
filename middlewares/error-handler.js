@@ -1,24 +1,24 @@
-//"use strict";
-//Object.defineProperty(exports, "__esModule", { value: true });
-//exports.errorHandler = void 0;
+
 const custom_error = require("../errors/custom-error");
 
 
-const errorHandler=(
+const errorHandler = (
     err,
     req,
-    res, 
-    next)=>{
-    
-       // console.log('el e rror es ---------9999999999-----------', err)
-   
+    res,
+    next) => {
+
+    // console.log('el e rror es ---------9999999999-----------', err)
+
 
     console.log('en error handler')
     if (err instanceof custom_error.CustomError) {
+        console.log(err.serializeErrors())
         return res.status(err.status).send({ errors: err.serializeErrors() });
     }
-   
+    console.log('Something went wrong')
     res.status(400).send({
+
         errors: [{ message: 'Something went wrong' }]
     });
 
@@ -31,6 +31,6 @@ const errorHandler=(
 
 }
 
-module.exports={
+module.exports = {
     errorHandler
 }
