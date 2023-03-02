@@ -1,6 +1,6 @@
 
 const request = require('supertest');
-const { app } = require('../../app2');
+const { app } = require('../../app');
 const axios= require('axios')
 
 const sequelize = require('../config/database');

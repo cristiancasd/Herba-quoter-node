@@ -5,7 +5,7 @@ const request = require('supertest');
 
 const path= require('path')
 const axios= require('axios')
-const { app } = require('../../app2');
+const { app } = require('../../app');
 
 //const Product = require("../models/Products");
 //const Quoter = require('../models/quoters');
