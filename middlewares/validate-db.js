@@ -2,9 +2,6 @@ const { validationResult } = require("express-validator");
 const { NotFoundError } = require("../errors/not-found-error");
 const Quoter = require("../src/models/Quoters");
 
-//const Quoter = require("../models/Quoters");
-//const User = require("../models/Users");
-
 const quoterByIdExist= async (req,res,next)=>{
     const errors= validationResult(req);
     if(errors.isEmpty()){

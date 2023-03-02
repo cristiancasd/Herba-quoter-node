@@ -1,23 +1,23 @@
 const jwt = require("jsonwebtoken");    //Paquete generar JWT
 
-const newJWT = (id='') => {
-    return new Promise((resolve, reject)=>{
-        const payload={id};
+const newJWT = (id = '') => {
+    return new Promise((resolve, reject) => {
+        const payload = { id };
 
         //Instrucción para crear un JWT
-        jwt.sign(payload,process.env.SECRETOPRIVATEKEY,{
+        jwt.sign(payload, process.env.SECRETOPRIVATEKEY, {
             expiresIn: '4h'     // Escoger cuanto dura el JWT
-        }, (err,token)=>{
-            if(err){
+        }, (err, token) => {
+            if (err) {
                 console.log(err)
                 reject('It can not create new JWT ')
-            }else{
+            } else {
                 resolve(token);
             }
         })
     })
 }
 
-module.exports={
+module.exports = {
     newJWT
 }

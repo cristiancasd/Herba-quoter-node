@@ -1,8 +1,3 @@
-//"use strict";
-//Object.defineProperty(exports, "__esModule", { value: true });
-//exports.NotFoundError = void 0;
-
-
 const custom_error = require("./custom-error");
 class NotFoundError extends custom_error.CustomError {
     constructor(data='') {

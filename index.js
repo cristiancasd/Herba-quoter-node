@@ -1,7 +1,7 @@
 require ('dotenv').config();
 require('colors')
 require ('dotenv').config()
-const dbConnection = require('./database/config');
+
 const { app } = require('./app2');
 
 const sequelize = require('./src/config/database');
